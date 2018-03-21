@@ -1,0 +1,15 @@
+DROP TABLE IF EXISTS whole_f3_step1;
+
+CREATE TABLE whole_f3_step1
+AS
+SELECT a.*, b.brand_id_median, b.compartment_avg, b.compartment_median, b.compartment_max
+	, b.compartment_min, b.driven_type_id_median, b.driven_type_id_max, b.driven_type_id_min, b.fuel_type_id_avg
+	, b.fuel_type_id_median, b.fuel_type_id_max, b.fuel_type_id_min, b.newenergy_type_id_avg, b.newenergy_type_id_median
+	, b.newenergy_type_id_max, b.newenergy_type_id_min, b.emission_standards_id_avg, b.emission_standards_id_median, b.emission_standards_id_max
+	, b.emission_standards_id_min, b.if_mpv_id_median, b.if_luxurious_id_median, b.car_length_avg, b.car_length_median
+	, b.car_length_max, b.car_length_min, b.car_width_avg, b.car_width_median, b.car_width_max
+	, b.car_width_min, b.car_height_avg, b.car_height_median, b.car_height_max, b.car_height_min
+	, b.displacement, b.if_charging, b.rated_passenger, b.power
+FROM whole_f2 a
+LEFT OUTER JOIN oc b
+ON a.class_id = b.class_id;

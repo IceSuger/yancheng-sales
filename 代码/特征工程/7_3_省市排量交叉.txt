@@ -1,0 +1,304 @@
+-- 省市车型，在过去2年/过去一年/过去半年/过去三个月中的销量mean/min/max/median
+DROP TABLE IF EXISTS whole_f7_3_step1;
+
+DROP TABLE IF EXISTS whole_f7_3_step2;
+
+CREATE TABLE whole_f7_3_step1
+AS
+-- SELECT province_id, city_id, class_id, sale_date, real_sale
+-- 	, c_real_som_displace_level_2, c_real_som_displace_level_12, c_real_ssm_displace_level_2_3, c_real_ssm_displace_level_2_7, c_real_ssm_displace_level_2_13
+-- 	, c_real_ssm_displace_level_2_25 -- 近X个月的median/max/min/avg
+select *
+	-- median
+	, ordinal(2, c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4) AS median_2_4_displace_level
+	, (ordinal(3, c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7) + ordinal(4, c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7)) / 2 AS median_2_7_displace_level
+	, (ordinal(6, c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7, c_real_som_displace_level_8, c_real_som_displace_level_9, c_real_som_displace_level_10, c_real_som_displace_level_11, c_real_som_displace_level_12, c_real_som_displace_level_13) + ordinal(7, c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7, c_real_som_displace_level_8, c_real_som_displace_level_9, c_real_som_displace_level_10, c_real_som_displace_level_11, c_real_som_displace_level_12, c_real_som_displace_level_13)) / 2 AS median_2_13_displace_level
+	, (ordinal(12, c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7, c_real_som_displace_level_8, c_real_som_displace_level_9, c_real_som_displace_level_10, c_real_som_displace_level_11, c_real_som_displace_level_12, c_real_som_displace_level_13, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25) + ordinal(13, c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7, c_real_som_displace_level_8, c_real_som_displace_level_9, c_real_som_displace_level_10, c_real_som_displace_level_11, c_real_som_displace_level_12, c_real_som_displace_level_13, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25)) / 2 AS median_2_25_displace_level 
+	-- max
+	, GREATEST(c_real_som_displace_level_2, c_real_som_displace_level_3) AS max_2_3_displace_level, GREATEST(c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4) AS max_2_4_displace_level
+	, GREATEST(c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7) AS max_2_7_displace_level
+	, GREATEST(c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7, c_real_som_displace_level_8, c_real_som_displace_level_9, c_real_som_displace_level_10, c_real_som_displace_level_11, c_real_som_displace_level_12, c_real_som_displace_level_13) AS max_2_13_displace_level
+	, greatest(c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7, c_real_som_displace_level_8, c_real_som_displace_level_9, c_real_som_displace_level_10, c_real_som_displace_level_11, c_real_som_displace_level_12, c_real_som_displace_level_13, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25) as max_2_25_displace_level 
+	-- min
+	, least(c_real_som_displace_level_2, c_real_som_displace_level_3) AS min_2_3_displace_level, least(c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4) AS min_2_4_displace_level
+	, least(c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7) AS min_2_7_displace_level
+	, least(c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7, c_real_som_displace_level_8, c_real_som_displace_level_9, c_real_som_displace_level_10, c_real_som_displace_level_11, c_real_som_displace_level_12, c_real_som_displace_level_13) AS min_2_13_displace_level
+	, least(c_real_som_displace_level_2, c_real_som_displace_level_3, c_real_som_displace_level_4, c_real_som_displace_level_5, c_real_som_displace_level_6, c_real_som_displace_level_7, c_real_som_displace_level_8, c_real_som_displace_level_9, c_real_som_displace_level_10, c_real_som_displace_level_11, c_real_som_displace_level_12, c_real_som_displace_level_13, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25) as min_2_25_displace_level 
+	-- avg
+	, (c_real_som_displace_level_2 + c_real_som_displace_level_3)/2 AS avg_2_3_displace_level, (c_real_som_displace_level_2 + c_real_som_displace_level_3 + c_real_som_displace_level_4)/3 AS avg_2_4_displace_level
+	, (c_real_som_displace_level_2 + c_real_som_displace_level_3 + c_real_som_displace_level_4 + c_real_som_displace_level_5 + c_real_som_displace_level_6 + c_real_som_displace_level_7)/6 AS avg_2_7_displace_level
+	, (c_real_som_displace_level_2 + c_real_som_displace_level_3 + c_real_som_displace_level_4 + c_real_som_displace_level_5 + c_real_som_displace_level_6 + c_real_som_displace_level_7 + c_real_som_displace_level_8 + c_real_som_displace_level_9 + c_real_som_displace_level_10 + c_real_som_displace_level_11 + c_real_som_displace_level_12 + c_real_som_displace_level_13)/12 AS avg_2_13_displace_level
+	, (c_real_som_displace_level_2 + c_real_som_displace_level_3 + c_real_som_displace_level_4 + c_real_som_displace_level_5 + c_real_som_displace_level_6 + c_real_som_displace_level_7 + c_real_som_displace_level_8 + c_real_som_displace_level_9 + c_real_som_displace_level_10 + c_real_som_displace_level_11 + c_real_som_displace_level_12 + c_real_som_displace_level_13 + c_real_som_displace_level_14 + c_real_som_displace_level_15 + c_real_som_displace_level_16 + c_real_som_displace_level_17 + c_real_som_displace_level_18 + c_real_som_displace_level_19 + c_real_som_displace_level_20 + c_real_som_displace_level_21 + c_real_som_displace_level_22 + c_real_som_displace_level_23 + c_real_som_displace_level_24 + c_real_som_displace_level_25)/24 as avg_2_25_displace_level 
+	
+	--上一年的
+	-- median
+	, ordinal(2, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16) AS median_14_16_displace_level
+	, (ordinal(3, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19) + ordinal(4, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19)) / 2 AS median_14_19_displace_level
+	, (ordinal(6, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25) + ordinal(7, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25)) / 2 AS median_14_25_displace_level
+	, (ordinal(12, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25, c_real_som_displace_level_26, c_real_som_displace_level_27, c_real_som_displace_level_28, c_real_som_displace_level_29, c_real_som_displace_level_30, c_real_som_displace_level_31, c_real_som_displace_level_32, c_real_som_displace_level_33, c_real_som_displace_level_34, c_real_som_displace_level_35, c_real_som_displace_level_36, c_real_som_displace_level_37) + ordinal(13, c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25, c_real_som_displace_level_26, c_real_som_displace_level_27, c_real_som_displace_level_28, c_real_som_displace_level_29, c_real_som_displace_level_30, c_real_som_displace_level_31, c_real_som_displace_level_32, c_real_som_displace_level_33, c_real_som_displace_level_34, c_real_som_displace_level_35, c_real_som_displace_level_36, c_real_som_displace_level_37)) / 2 AS median_14_37_displace_level 
+	-- max
+	, GREATEST(c_real_som_displace_level_14, c_real_som_displace_level_15) AS max_14_15_displace_level, GREATEST(c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16) AS max_14_16_displace_level
+	, GREATEST(c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19) AS max_14_19_displace_level
+	, GREATEST(c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25) AS max_14_25_displace_level
+	, greatest(c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25, c_real_som_displace_level_26, c_real_som_displace_level_27, c_real_som_displace_level_28, c_real_som_displace_level_29, c_real_som_displace_level_30, c_real_som_displace_level_31, c_real_som_displace_level_32, c_real_som_displace_level_33, c_real_som_displace_level_34, c_real_som_displace_level_35, c_real_som_displace_level_36, c_real_som_displace_level_37) as max_14_37_displace_level 
+	-- min
+	, least(c_real_som_displace_level_14, c_real_som_displace_level_15) AS min_14_15_displace_level, least(c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16) AS min_14_16_displace_level
+	, least(c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19) AS min_14_19_displace_level
+	, least(c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25) AS min_14_25_displace_level
+	, least(c_real_som_displace_level_14, c_real_som_displace_level_15, c_real_som_displace_level_16, c_real_som_displace_level_17, c_real_som_displace_level_18, c_real_som_displace_level_19, c_real_som_displace_level_20, c_real_som_displace_level_21, c_real_som_displace_level_22, c_real_som_displace_level_23, c_real_som_displace_level_24, c_real_som_displace_level_25, c_real_som_displace_level_26, c_real_som_displace_level_27, c_real_som_displace_level_28, c_real_som_displace_level_29, c_real_som_displace_level_30, c_real_som_displace_level_31, c_real_som_displace_level_32, c_real_som_displace_level_33, c_real_som_displace_level_34, c_real_som_displace_level_35, c_real_som_displace_level_36, c_real_som_displace_level_37) as min_14_37_displace_level
+	-- avg
+	, (c_real_som_displace_level_14 + c_real_som_displace_level_15)/2 AS avg_14_15_displace_level, (c_real_som_displace_level_14 + c_real_som_displace_level_15 + c_real_som_displace_level_16)/3 AS avg_14_16_displace_level
+	, (c_real_som_displace_level_14 + c_real_som_displace_level_15 + c_real_som_displace_level_16 + c_real_som_displace_level_17 + c_real_som_displace_level_18 + c_real_som_displace_level_19)/6 AS avg_14_19_displace_level
+	, (c_real_som_displace_level_14 + c_real_som_displace_level_15 + c_real_som_displace_level_16 + c_real_som_displace_level_17 + c_real_som_displace_level_18 + c_real_som_displace_level_19 + c_real_som_displace_level_20 + c_real_som_displace_level_21 + c_real_som_displace_level_22 + c_real_som_displace_level_23 + c_real_som_displace_level_24 + c_real_som_displace_level_25)/12 AS avg_14_25_displace_level
+	, (c_real_som_displace_level_14 + c_real_som_displace_level_15 + c_real_som_displace_level_16 + c_real_som_displace_level_17 + c_real_som_displace_level_18 + c_real_som_displace_level_19 + c_real_som_displace_level_20 + c_real_som_displace_level_21 + c_real_som_displace_level_22 + c_real_som_displace_level_23 + c_real_som_displace_level_24 + c_real_som_displace_level_25 + c_real_som_displace_level_26 + c_real_som_displace_level_27 + c_real_som_displace_level_28 + c_real_som_displace_level_29 + c_real_som_displace_level_30 + c_real_som_displace_level_31 + c_real_som_displace_level_32 + c_real_som_displace_level_33 + c_real_som_displace_level_34 + c_real_som_displace_level_35 + c_real_som_displace_level_36 + c_real_som_displace_level_37)/24 as avg_14_37_displace_level 
+	
+FROM dr_c_real_ssm_displace_level_2_36;
+
+-- 【】
+-- 去年本月的上述特征
+-- 上个月销量，比上，近三/四个月的均值/近半年的均值/近一年均值/近2年均值
+-- 均值换成中位数/最大值/最小值
+-- 各时段的最大值-最小值
+-- -------------
+-- 去年这个月销量，比上，12~14/~15/~17/~23的mean\min\max\median
+CREATE TABLE whole_f7_3_step2
+AS
+SELECT *
+	--今年的各种做差
+	--X个月的median/max/min/avg - Y个月的
+	--median - median
+	, median_2_4_displace_level - median_2_7_displace_level as median_2_4__sub__median_2_7_displace_level
+	, median_2_4_displace_level - median_2_13_displace_level as median_2_4__sub__median_2_13_displace_level
+	, median_2_4_displace_level - median_2_25_displace_level as median_2_4__sub__median_2_25_displace_level
+	
+	, median_2_7_displace_level - median_2_13_displace_level as median_2_7__sub__median_2_13_displace_level
+	, median_2_7_displace_level - median_2_25_displace_level as median_2_7__sub__median_2_25_displace_level
+	
+	, median_2_13_displace_level - median_2_25_displace_level as median_2_13__sub__median_2_25_displace_level
+
+	--median - min
+	, median_2_4_displace_level - min_2_7_displace_level as median_2_4__sub__min_2_7_displace_level
+	, median_2_4_displace_level - min_2_13_displace_level as median_2_4__sub__min_2_13_displace_level
+	, median_2_4_displace_level - min_2_25_displace_level as median_2_4__sub__min_2_25_displace_level
+	
+	, median_2_7_displace_level - min_2_13_displace_level as median_2_7__sub__min_2_13_displace_level
+	, median_2_7_displace_level - min_2_25_displace_level as median_2_7__sub__min_2_25_displace_level
+	
+	, median_2_13_displace_level - min_2_25_displace_level as median_2_13__sub__min_2_25_displace_level
+
+	--median - avg
+	, median_2_4_displace_level - avg_2_7_displace_level as median_2_4__sub__avg_2_7_displace_level
+	, median_2_4_displace_level - avg_2_13_displace_level as median_2_4__sub__avg_2_13_displace_level
+	, median_2_4_displace_level - avg_2_25_displace_level as median_2_4__sub__avg_2_25_displace_level
+	
+	, median_2_7_displace_level - avg_2_13_displace_level as median_2_7__sub__avg_2_13_displace_level
+	, median_2_7_displace_level - avg_2_25_displace_level as median_2_7__sub__avg_2_25_displace_level
+	
+	, median_2_13_displace_level - avg_2_25_displace_level as median_2_13__sub__avg_2_25_displace_level
+
+--max - max
+	, max_2_4_displace_level - max_2_7_displace_level as max_2_4__sub__max_2_7_displace_level
+	, max_2_4_displace_level - max_2_13_displace_level as max_2_4__sub__max_2_13_displace_level
+	, max_2_4_displace_level - max_2_25_displace_level as max_2_4__sub__max_2_25_displace_level
+	
+	, max_2_7_displace_level - max_2_13_displace_level as max_2_7__sub__max_2_13_displace_level
+	, max_2_7_displace_level - max_2_25_displace_level as max_2_7__sub__max_2_25_displace_level
+	
+	, max_2_13_displace_level - max_2_25_displace_level as max_2_13__sub__max_2_25_displace_level
+	--max - avg
+	, max_2_4_displace_level - avg_2_7_displace_level as max_2_4__sub__avg_2_7_displace_level
+	, max_2_4_displace_level - avg_2_13_displace_level as max_2_4__sub__avg_2_13_displace_level
+	, max_2_4_displace_level - avg_2_25_displace_level as max_2_4__sub__avg_2_25_displace_level
+	
+	, max_2_7_displace_level - avg_2_13_displace_level as max_2_7__sub__avg_2_13_displace_level
+	, max_2_7_displace_level - avg_2_25_displace_level as max_2_7__sub__avg_2_25_displace_level
+	
+	, max_2_13_displace_level - avg_2_25_displace_level as max_2_13__sub__avg_2_25_displace_level
+	--max - median
+	, max_2_4_displace_level - median_2_7_displace_level as max_2_4__sub__median_2_7_displace_level
+	, max_2_4_displace_level - median_2_13_displace_level as max_2_4__sub__median_2_13_displace_level
+	, max_2_4_displace_level - median_2_25_displace_level as max_2_4__sub__median_2_25_displace_level
+	
+	, max_2_7_displace_level - median_2_13_displace_level as max_2_7__sub__median_2_13_displace_level
+	, max_2_7_displace_level - median_2_25_displace_level as max_2_7__sub__median_2_25_displace_level
+	
+	, max_2_13_displace_level - median_2_25_displace_level as max_2_13__sub__median_2_25_displace_level
+--max - min
+	, max_2_4_displace_level - min_2_7_displace_level as max_2_4__sub__min_2_7_displace_level
+	, max_2_4_displace_level - min_2_13_displace_level as max_2_4__sub__min_2_13_displace_level
+	, max_2_4_displace_level - min_2_25_displace_level as max_2_4__sub__min_2_25_displace_level
+	
+	, max_2_7_displace_level - min_2_13_displace_level as max_2_7__sub__min_2_13_displace_level
+	, max_2_7_displace_level - min_2_25_displace_level as max_2_7__sub__min_2_25_displace_level
+	
+	, max_2_13_displace_level - min_2_25_displace_level as max_2_13__sub__min_2_25_displace_level
+
+--avg - min
+	, avg_2_4_displace_level - min_2_7_displace_level as avg_2_4__sub__min_2_7_displace_level
+	, avg_2_4_displace_level - min_2_13_displace_level as avg_2_4__sub__min_2_13_displace_level
+	, avg_2_4_displace_level - min_2_25_displace_level as avg_2_4__sub__min_2_25_displace_level
+	
+	, avg_2_7_displace_level - min_2_13_displace_level as avg_2_7__sub__min_2_13_displace_level
+	, avg_2_7_displace_level - min_2_25_displace_level as avg_2_7__sub__min_2_25_displace_level
+	
+	, avg_2_13_displace_level - min_2_25_displace_level as avg_2_13__sub__min_2_25_displace_level
+--avg - avg
+	, avg_2_4_displace_level - avg_2_7_displace_level as avg_2_4__sub__avg_2_7_displace_level
+	, avg_2_4_displace_level - avg_2_13_displace_level as avg_2_4__sub__avg_2_13_displace_level
+	, avg_2_4_displace_level - avg_2_25_displace_level as avg_2_4__sub__avg_2_25_displace_level
+	
+	, avg_2_7_displace_level - avg_2_13_displace_level as avg_2_7__sub__avg_2_13_displace_level
+	, avg_2_7_displace_level - avg_2_25_displace_level as avg_2_7__sub__avg_2_25_displace_level
+	
+	, avg_2_13_displace_level - avg_2_25_displace_level as avg_2_13__sub__avg_2_25_displace_level
+	
+	--min - min
+	, min_2_4_displace_level - min_2_7_displace_level as min_2_4__sub__min_2_7_displace_level
+	, min_2_4_displace_level - min_2_13_displace_level as min_2_4__sub__min_2_13_displace_level
+	, min_2_4_displace_level - min_2_25_displace_level as min_2_4__sub__min_2_25_displace_level
+	
+	, min_2_7_displace_level - min_2_13_displace_level as min_2_7__sub__min_2_13_displace_level
+	, min_2_7_displace_level - min_2_25_displace_level as min_2_7__sub__min_2_25_displace_level
+	
+	, min_2_13_displace_level - min_2_25_displace_level as min_2_13__sub__min_2_25_displace_level
+	
+	--去年的本月销量，与其他这些均值中位数之类的关系
+	, c_real_som_displace_level_12 - median_14_16_displace_level as c_real_som_displace_level_12__sub__median_14_16_displace_level
+, c_real_som_displace_level_12 - median_14_19_displace_level as c_real_som_displace_level_12__sub__median_14_19_displace_level
+, c_real_som_displace_level_12 - median_14_25_displace_level as c_real_som_displace_level_12__sub__median_14_25_displace_level
+, c_real_som_displace_level_12 - median_14_37_displace_level as c_real_som_displace_level_12__sub__median_14_37_displace_level
+
+, c_real_som_displace_level_12 - max_14_16_displace_level as c_real_som_displace_level_12__sub__max_14_16_displace_level
+, c_real_som_displace_level_12 - max_14_19_displace_level as c_real_som_displace_level_12__sub__max_14_19_displace_level
+, c_real_som_displace_level_12 - max_14_25_displace_level as c_real_som_displace_level_12__sub__max_14_25_displace_level
+, c_real_som_displace_level_12 - max_14_37_displace_level as c_real_som_displace_level_12__sub__max_14_37_displace_level
+
+, c_real_som_displace_level_12 - min_14_16_displace_level as c_real_som_displace_level_12__sub__min_14_16_displace_level
+, c_real_som_displace_level_12 - min_14_19_displace_level as c_real_som_displace_level_12__sub__min_14_19_displace_level
+, c_real_som_displace_level_12 - min_14_25_displace_level as c_real_som_displace_level_12__sub__min_14_25_displace_level
+, c_real_som_displace_level_12 - min_14_37_displace_level as c_real_som_displace_level_12__sub__min_14_37_displace_level
+
+, c_real_som_displace_level_12 - avg_14_16_displace_level as c_real_som_displace_level_12__sub__avg_14_16_displace_level
+, c_real_som_displace_level_12 - avg_14_19_displace_level as c_real_som_displace_level_12__sub__avg_14_19_displace_level
+, c_real_som_displace_level_12 - avg_14_25_displace_level as c_real_som_displace_level_12__sub__avg_14_25_displace_level
+, c_real_som_displace_level_12 - avg_14_37_displace_level as c_real_som_displace_level_12__sub__avg_14_37_displace_level
+
+--【平滑除法】
+--median +1)/(1+ median
+	, (median_2_4_displace_level +1)/(1+ median_2_7_displace_level) as median_2_4__smoothdivby__median_2_7_displace_level
+	, (median_2_4_displace_level +1)/(1+ median_2_13_displace_level) as median_2_4__smoothdivby__median_2_13_displace_level
+	, (median_2_4_displace_level +1)/(1+ median_2_25_displace_level) as median_2_4__smoothdivby__median_2_25_displace_level
+	
+	, (median_2_7_displace_level +1)/(1+ median_2_13_displace_level) as median_2_7__smoothdivby__median_2_13_displace_level
+	, (median_2_7_displace_level +1)/(1+ median_2_25_displace_level) as median_2_7__smoothdivby__median_2_25_displace_level
+	
+	, (median_2_13_displace_level +1)/(1+ median_2_25_displace_level) as median_2_13__smoothdivby__median_2_25_displace_level
+
+	--median +1)/(1+ min
+	, (median_2_4_displace_level +1)/(1+ min_2_7_displace_level) as median_2_4__smoothdivby__min_2_7_displace_level
+	, (median_2_4_displace_level +1)/(1+ min_2_13_displace_level) as median_2_4__smoothdivby__min_2_13_displace_level
+	, (median_2_4_displace_level +1)/(1+ min_2_25_displace_level) as median_2_4__smoothdivby__min_2_25_displace_level
+	
+	, (median_2_7_displace_level +1)/(1+ min_2_13_displace_level) as median_2_7__smoothdivby__min_2_13_displace_level
+	, (median_2_7_displace_level +1)/(1+ min_2_25_displace_level) as median_2_7__smoothdivby__min_2_25_displace_level
+	
+	, (median_2_13_displace_level +1)/(1+ min_2_25_displace_level) as median_2_13__smoothdivby__min_2_25_displace_level
+
+	--median +1)/(1+ avg
+	, (median_2_4_displace_level +1)/(1+ avg_2_7_displace_level) as median_2_4__smoothdivby__avg_2_7_displace_level
+	, (median_2_4_displace_level +1)/(1+ avg_2_13_displace_level) as median_2_4__smoothdivby__avg_2_13_displace_level
+	, (median_2_4_displace_level +1)/(1+ avg_2_25_displace_level) as median_2_4__smoothdivby__avg_2_25_displace_level
+	
+	, (median_2_7_displace_level +1)/(1+ avg_2_13_displace_level) as median_2_7__smoothdivby__avg_2_13_displace_level
+	, (median_2_7_displace_level +1)/(1+ avg_2_25_displace_level) as median_2_7__smoothdivby__avg_2_25_displace_level
+	
+	, (median_2_13_displace_level +1)/(1+ avg_2_25_displace_level) as median_2_13__smoothdivby__avg_2_25_displace_level
+
+--max +1)/(1+ max
+	, (max_2_4_displace_level +1)/(1+ max_2_7_displace_level) as max_2_4__smoothdivby__max_2_7_displace_level
+	, (max_2_4_displace_level +1)/(1+ max_2_13_displace_level) as max_2_4__smoothdivby__max_2_13_displace_level
+	, (max_2_4_displace_level +1)/(1+ max_2_25_displace_level) as max_2_4__smoothdivby__max_2_25_displace_level
+	
+	, (max_2_7_displace_level +1)/(1+ max_2_13_displace_level) as max_2_7__smoothdivby__max_2_13_displace_level
+	, (max_2_7_displace_level +1)/(1+ max_2_25_displace_level) as max_2_7__smoothdivby__max_2_25_displace_level
+	
+	, (max_2_13_displace_level +1)/(1+ max_2_25_displace_level) as max_2_13__smoothdivby__max_2_25_displace_level
+	--max +1)/(1+ avg
+	, (max_2_4_displace_level +1)/(1+ avg_2_7_displace_level) as max_2_4__smoothdivby__avg_2_7_displace_level
+	, (max_2_4_displace_level +1)/(1+ avg_2_13_displace_level) as max_2_4__smoothdivby__avg_2_13_displace_level
+	, (max_2_4_displace_level +1)/(1+ avg_2_25_displace_level) as max_2_4__smoothdivby__avg_2_25_displace_level
+	
+	, (max_2_7_displace_level +1)/(1+ avg_2_13_displace_level) as max_2_7__smoothdivby__avg_2_13_displace_level
+	, (max_2_7_displace_level +1)/(1+ avg_2_25_displace_level) as max_2_7__smoothdivby__avg_2_25_displace_level
+	
+	, (max_2_13_displace_level +1)/(1+ avg_2_25_displace_level) as max_2_13__smoothdivby__avg_2_25_displace_level
+	--max +1)/(1+ median
+	, (max_2_4_displace_level +1)/(1+ median_2_7_displace_level) as max_2_4__smoothdivby__median_2_7_displace_level
+	, (max_2_4_displace_level +1)/(1+ median_2_13_displace_level) as max_2_4__smoothdivby__median_2_13_displace_level
+	, (max_2_4_displace_level +1)/(1+ median_2_25_displace_level) as max_2_4__smoothdivby__median_2_25_displace_level
+	
+	, (max_2_7_displace_level +1)/(1+ median_2_13_displace_level) as max_2_7__smoothdivby__median_2_13_displace_level
+	, (max_2_7_displace_level +1)/(1+ median_2_25_displace_level) as max_2_7__smoothdivby__median_2_25_displace_level
+	
+	, (max_2_13_displace_level +1)/(1+ median_2_25_displace_level) as max_2_13__smoothdivby__median_2_25_displace_level
+--max +1)/(1+ min
+	, (max_2_4_displace_level +1)/(1+ min_2_7_displace_level) as max_2_4__smoothdivby__min_2_7_displace_level
+	, (max_2_4_displace_level +1)/(1+ min_2_13_displace_level) as max_2_4__smoothdivby__min_2_13_displace_level
+	, (max_2_4_displace_level +1)/(1+ min_2_25_displace_level) as max_2_4__smoothdivby__min_2_25_displace_level
+	
+	, (max_2_7_displace_level +1)/(1+ min_2_13_displace_level) as max_2_7__smoothdivby__min_2_13_displace_level
+	, (max_2_7_displace_level +1)/(1+ min_2_25_displace_level) as max_2_7__smoothdivby__min_2_25_displace_level
+	
+	, (max_2_13_displace_level +1)/(1+ min_2_25_displace_level) as max_2_13__smoothdivby__min_2_25_displace_level
+
+--avg +1)/(1+ min
+	, (avg_2_4_displace_level +1)/(1+ min_2_7_displace_level) as avg_2_4__smoothdivby__min_2_7_displace_level
+	, (avg_2_4_displace_level +1)/(1+ min_2_13_displace_level) as avg_2_4__smoothdivby__min_2_13_displace_level
+	, (avg_2_4_displace_level +1)/(1+ min_2_25_displace_level) as avg_2_4__smoothdivby__min_2_25_displace_level
+	
+	, (avg_2_7_displace_level +1)/(1+ min_2_13_displace_level) as avg_2_7__smoothdivby__min_2_13_displace_level
+	, (avg_2_7_displace_level +1)/(1+ min_2_25_displace_level) as avg_2_7__smoothdivby__min_2_25_displace_level
+	
+	, (avg_2_13_displace_level +1)/(1+ min_2_25_displace_level) as avg_2_13__smoothdivby__min_2_25_displace_level
+--avg +1)/(1+ avg
+	, (avg_2_4_displace_level +1)/(1+ avg_2_7_displace_level) as avg_2_4__smoothdivby__avg_2_7_displace_level
+	, (avg_2_4_displace_level +1)/(1+ avg_2_13_displace_level) as avg_2_4__smoothdivby__avg_2_13_displace_level
+	, (avg_2_4_displace_level +1)/(1+ avg_2_25_displace_level) as avg_2_4__smoothdivby__avg_2_25_displace_level
+	
+	, (avg_2_7_displace_level +1)/(1+ avg_2_13_displace_level) as avg_2_7__smoothdivby__avg_2_13_displace_level
+	, (avg_2_7_displace_level +1)/(1+ avg_2_25_displace_level) as avg_2_7__smoothdivby__avg_2_25_displace_level
+	
+	, (avg_2_13_displace_level +1)/(1+ avg_2_25_displace_level) as avg_2_13__smoothdivby__avg_2_25_displace_level
+	
+	--min +1)/(1+ min
+	, (min_2_4_displace_level +1)/(1+ min_2_7_displace_level) as min_2_4__smoothdivby__min_2_7_displace_level
+	, (min_2_4_displace_level +1)/(1+ min_2_13_displace_level) as min_2_4__smoothdivby__min_2_13_displace_level
+	, (min_2_4_displace_level +1)/(1+ min_2_25_displace_level) as min_2_4__smoothdivby__min_2_25_displace_level
+	
+	, (min_2_7_displace_level +1)/(1+ min_2_13_displace_level) as min_2_7__smoothdivby__min_2_13_displace_level
+	, (min_2_7_displace_level +1)/(1+ min_2_25_displace_level) as min_2_7__smoothdivby__min_2_25_displace_level
+	
+	, (min_2_13_displace_level +1)/(1+ min_2_25_displace_level) as min_2_13__smoothdivby__min_2_25_displace_level
+	
+	--去年的本月销量，与其他这些均值中位数之类的关系
+	, (c_real_som_displace_level_12 +1)/(1+ median_14_16_displace_level) as c_real_som_displace_level_12__smoothdivby__median_14_16_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ median_14_19_displace_level) as c_real_som_displace_level_12__smoothdivby__median_14_19_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ median_14_25_displace_level) as c_real_som_displace_level_12__smoothdivby__median_14_25_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ median_14_37_displace_level) as c_real_som_displace_level_12__smoothdivby__median_14_37_displace_level
+
+, (c_real_som_displace_level_12 +1)/(1+ max_14_16_displace_level) as c_real_som_displace_level_12__smoothdivby__max_14_16_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ max_14_19_displace_level) as c_real_som_displace_level_12__smoothdivby__max_14_19_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ max_14_25_displace_level) as c_real_som_displace_level_12__smoothdivby__max_14_25_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ max_14_37_displace_level) as c_real_som_displace_level_12__smoothdivby__max_14_37_displace_level
+
+, (c_real_som_displace_level_12 +1)/(1+ min_14_16_displace_level) as c_real_som_displace_level_12__smoothdivby__min_14_16_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ min_14_19_displace_level) as c_real_som_displace_level_12__smoothdivby__min_14_19_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ min_14_25_displace_level) as c_real_som_displace_level_12__smoothdivby__min_14_25_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ min_14_37_displace_level) as c_real_som_displace_level_12__smoothdivby__min_14_37_displace_level
+
+, (c_real_som_displace_level_12 +1)/(1+ avg_14_16_displace_level) as c_real_som_displace_level_12__smoothdivby__avg_14_16_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ avg_14_19_displace_level) as c_real_som_displace_level_12__smoothdivby__avg_14_19_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ avg_14_25_displace_level) as c_real_som_displace_level_12__smoothdivby__avg_14_25_displace_level
+, (c_real_som_displace_level_12 +1)/(1+ avg_14_37_displace_level) as c_real_som_displace_level_12__smoothdivby__avg_14_37_displace_level
+
+FROM whole_f7_3_step1;

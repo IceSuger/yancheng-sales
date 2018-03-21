@@ -1,0 +1,6 @@
+--最后补上这两列特征吧
+drop table if exists whole_f8;
+create table whole_f8 as
+select *,
+datepart(to_date(sale_date,'yyyymm') , 'yyyy') as year, datepart(to_date(sale_date,'yyyymm') , 'mm') as month
+from whole_before_f8;

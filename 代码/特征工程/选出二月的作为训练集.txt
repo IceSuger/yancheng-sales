@@ -1,0 +1,4 @@
+drop table if exists dataset0_train_feb;
+create table dataset0_train_feb as 
+select  from dataset0_train_f8 
+where month = 2;

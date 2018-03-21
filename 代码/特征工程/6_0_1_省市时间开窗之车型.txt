@@ -1,0 +1,40 @@
+drop table if exists whole_f601__prv_city_month;
+create table whole_f601__prv_city_month as
+SELECT province_id, city_id, sale_date, class_id --, c_real_som_2
+	, dense_rank() OVER (PARTITION BY province_id, city_id, sale_date ORDER BY c_real_som_2 ASC) AS rank_within_prv_city_month__2_mm_ago
+	, COUNT(c_real_som_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS count_of_record_within_prv_city_month__2_mm_ago
+	, AVG(c_real_som_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS avg_within_prv_city_month__2_mm_ago
+	, MAX(c_real_som_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS max_within_prv_city_month__2_mm_ago
+	, MIN(c_real_som_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS min_within_prv_city_month__2_mm_ago
+	, median(c_real_som_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS median_within_prv_city_month__2_mm_ago
+	, STDDEV(c_real_som_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS stddev_within_prv_city_month__2_mm_ago
+	, stddev_samp(c_real_som_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS stddev_samp_within_prv_city_month__2_mm_ago
+	
+	, dense_rank() OVER (PARTITION BY province_id, city_id, sale_date ORDER BY c_real_som_12 ASC) AS rank_within_prv_city_month__12_mm_ago
+	, COUNT(c_real_som_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS count_of_record_within_prv_city_month__12_mm_ago
+	, AVG(c_real_som_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS avg_within_prv_city_month__12_mm_ago
+	, MAX(c_real_som_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS max_within_prv_city_month__12_mm_ago
+	, MIN(c_real_som_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS min_within_prv_city_month__12_mm_ago
+	, median(c_real_som_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS median_within_prv_city_month__12_mm_ago
+	, STDDEV(c_real_som_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS stddev_within_prv_city_month__12_mm_ago
+	, stddev_samp(c_real_som_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS stddev_samp_within_prv_city_month__12_mm_ago
+FROM dr_c_real_ssm_2_36;	--whole_f3为带了车型自身分类（按排量等）的训练+测试表
+
+-- drop table if exists whole_f601__prv_city_month;
+-- CREATE TABLE whole_f601__prv_city_month
+-- AS
+-- SELECT a.*
+-- , b.rank_within_prv_city_month AS rank_within_prv_city_month__2_mm_ago
+-- , b.count_of_class_within_prv_city_month as count_of_class_within_prv_city_month__2_mm_ago
+-- , b.avg_within_prv_city_month as avg_within_prv_city_month__2_mm_ago
+-- , b.max_within_prv_city_month as max_within_prv_city_month__2_mm_ago
+-- , b.min_within_prv_city_month as min_within_prv_city_month__2_mm_ago
+-- , b.median_within_prv_city_month as median_within_prv_city_month__2_mm_ago
+-- , b.stddev_within_prv_city_month as stddev_within_prv_city_month__2_mm_ago
+-- , b.stddev_samp_within_prv_city_month as stddev_samp_within_prv_city_month__2_mm_ago
+-- FROM whole_f3 a
+-- LEFT OUTER JOIN helper_f601_step1 b
+-- ON to_date(a.sale_date,'yyyymm') = dateadd(to_date(b.sale_date,'yyyymm'), 2, 'mm')
+-- 	AND a.province_id = b.province_id
+-- 	AND a.class_id = b.class_id
+-- 	AND a.city_id = b.city_id;

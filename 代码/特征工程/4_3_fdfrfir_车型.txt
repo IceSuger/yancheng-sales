@@ -1,0 +1,24 @@
+DROP TABLE IF EXISTS whole_f4_3;
+
+DROP TABLE IF EXISTS dr_c_real_fd_real_fr;
+
+CREATE TABLE dr_c_real_fd_real_fr
+AS
+SELECT *, c_real_som_2 - c_real_som_3 AS c_real_fd_2, c_real_som_3 - c_real_som_4 AS c_real_fd_3
+	, c_real_som_12 - c_real_som_13 AS c_real_fd_12, c_real_som_24 - c_real_som_25 AS c_real_fd_24
+	, c_real_som_36 - c_real_som_37 AS c_real_fd_36, c_real_som_2  / c_real_som_3  AS c_real_fr_2
+	, c_real_som_3 / c_real_som_4 AS c_real_fr_3, c_real_som_12 / c_real_som_13 AS c_real_fr_12
+	, c_real_som_24 / c_real_som_25 AS c_real_fr_24, c_real_som_36 / c_real_som_37 AS c_real_fr_36
+	, c_real_som_2 - c_real_som_14 as c_real_fd_2_14, c_real_som_3 - c_real_som_15 as c_real_fd_3_15
+	, c_real_som_2 / c_real_som_14 as c_real_fr_2_14, c_real_som_3 / c_real_som_15 as c_real_fr_3_15
+FROM dr_c_real_ssm_2_36;
+
+-- inc_rate 增长率 c_fir
+CREATE TABLE whole_f4_3
+AS
+SELECT *, c_real_fr_2 - 1 AS c_real_fir_2, c_real_fr_3 - 1 AS c_real_fir_3
+	, c_real_fr_12 - 1 AS c_real_fir_12, c_real_fr_24 - 1 AS c_real_fir_24
+	, c_real_fr_36 - 1 AS c_real_fir_36
+	, c_real_fr_2_14 - 1 as c_real_fir_2_14
+	, c_real_fr_3_15 - 1 as c_real_fir_3_15
+FROM dr_c_real_fd_real_fr;

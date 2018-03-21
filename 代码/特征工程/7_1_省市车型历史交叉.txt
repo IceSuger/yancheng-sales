@@ -1,0 +1,304 @@
+-- 省市车型，在过去2年/过去一年/过去半年/过去三个月中的销量mean/min/max/median
+DROP TABLE IF EXISTS whole_f7_1_step1;
+
+DROP TABLE IF EXISTS whole_f7_1_step2;
+
+CREATE TABLE whole_f7_1_step1
+AS
+-- SELECT province_id, city_id, class_id, sale_date, real_sale
+-- 	, c_real_som_2, c_real_som_12, c_real_ssm_2_3, c_real_ssm_2_7, c_real_ssm_2_13
+-- 	, c_real_ssm_2_25 -- 近X个月的median/max/min/avg
+select *
+	-- median
+	, ordinal(2, c_real_som_2, c_real_som_3, c_real_som_4) AS median_2_4
+	, (ordinal(3, c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7) + ordinal(4, c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7)) / 2 AS median_2_7
+	, (ordinal(6, c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7, c_real_som_8, c_real_som_9, c_real_som_10, c_real_som_11, c_real_som_12, c_real_som_13) + ordinal(7, c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7, c_real_som_8, c_real_som_9, c_real_som_10, c_real_som_11, c_real_som_12, c_real_som_13)) / 2 AS median_2_13
+	, (ordinal(12, c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7, c_real_som_8, c_real_som_9, c_real_som_10, c_real_som_11, c_real_som_12, c_real_som_13, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25) + ordinal(13, c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7, c_real_som_8, c_real_som_9, c_real_som_10, c_real_som_11, c_real_som_12, c_real_som_13, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25)) / 2 AS median_2_25 
+	-- max
+	, GREATEST(c_real_som_2, c_real_som_3) AS max_2_3, GREATEST(c_real_som_2, c_real_som_3, c_real_som_4) AS max_2_4
+	, GREATEST(c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7) AS max_2_7
+	, GREATEST(c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7, c_real_som_8, c_real_som_9, c_real_som_10, c_real_som_11, c_real_som_12, c_real_som_13) AS max_2_13
+	, greatest(c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7, c_real_som_8, c_real_som_9, c_real_som_10, c_real_som_11, c_real_som_12, c_real_som_13, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25) as max_2_25 
+	-- min
+	, least(c_real_som_2, c_real_som_3) AS min_2_3, least(c_real_som_2, c_real_som_3, c_real_som_4) AS min_2_4
+	, least(c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7) AS min_2_7
+	, least(c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7, c_real_som_8, c_real_som_9, c_real_som_10, c_real_som_11, c_real_som_12, c_real_som_13) AS min_2_13
+	, least(c_real_som_2, c_real_som_3, c_real_som_4, c_real_som_5, c_real_som_6, c_real_som_7, c_real_som_8, c_real_som_9, c_real_som_10, c_real_som_11, c_real_som_12, c_real_som_13, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25) as min_2_25 
+	-- avg
+	, (c_real_som_2 + c_real_som_3)/2 AS avg_2_3, (c_real_som_2 + c_real_som_3 + c_real_som_4)/3 AS avg_2_4
+	, (c_real_som_2 + c_real_som_3 + c_real_som_4 + c_real_som_5 + c_real_som_6 + c_real_som_7)/6 AS avg_2_7
+	, (c_real_som_2 + c_real_som_3 + c_real_som_4 + c_real_som_5 + c_real_som_6 + c_real_som_7 + c_real_som_8 + c_real_som_9 + c_real_som_10 + c_real_som_11 + c_real_som_12 + c_real_som_13)/12 AS avg_2_13
+	, (c_real_som_2 + c_real_som_3 + c_real_som_4 + c_real_som_5 + c_real_som_6 + c_real_som_7 + c_real_som_8 + c_real_som_9 + c_real_som_10 + c_real_som_11 + c_real_som_12 + c_real_som_13 + c_real_som_14 + c_real_som_15 + c_real_som_16 + c_real_som_17 + c_real_som_18 + c_real_som_19 + c_real_som_20 + c_real_som_21 + c_real_som_22 + c_real_som_23 + c_real_som_24 + c_real_som_25)/24 as avg_2_25 
+	
+	--上一年的
+	-- median
+	, ordinal(2, c_real_som_14, c_real_som_15, c_real_som_16) AS median_14_16
+	, (ordinal(3, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19) + ordinal(4, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19)) / 2 AS median_14_19
+	, (ordinal(6, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25) + ordinal(7, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25)) / 2 AS median_14_25
+	, (ordinal(12, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25, c_real_som_26, c_real_som_27, c_real_som_28, c_real_som_29, c_real_som_30, c_real_som_31, c_real_som_32, c_real_som_33, c_real_som_34, c_real_som_35, c_real_som_36, c_real_som_37) + ordinal(13, c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25, c_real_som_26, c_real_som_27, c_real_som_28, c_real_som_29, c_real_som_30, c_real_som_31, c_real_som_32, c_real_som_33, c_real_som_34, c_real_som_35, c_real_som_36, c_real_som_37)) / 2 AS median_14_37 
+	-- max
+	, GREATEST(c_real_som_14, c_real_som_15) AS max_14_15, GREATEST(c_real_som_14, c_real_som_15, c_real_som_16) AS max_14_16
+	, GREATEST(c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19) AS max_14_19
+	, GREATEST(c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25) AS max_14_25
+	, greatest(c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25, c_real_som_26, c_real_som_27, c_real_som_28, c_real_som_29, c_real_som_30, c_real_som_31, c_real_som_32, c_real_som_33, c_real_som_34, c_real_som_35, c_real_som_36, c_real_som_37) as max_14_37 
+	-- min
+	, least(c_real_som_14, c_real_som_15) AS min_14_15, least(c_real_som_14, c_real_som_15, c_real_som_16) AS min_14_16
+	, least(c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19) AS min_14_19
+	, least(c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25) AS min_14_25
+	, least(c_real_som_14, c_real_som_15, c_real_som_16, c_real_som_17, c_real_som_18, c_real_som_19, c_real_som_20, c_real_som_21, c_real_som_22, c_real_som_23, c_real_som_24, c_real_som_25, c_real_som_26, c_real_som_27, c_real_som_28, c_real_som_29, c_real_som_30, c_real_som_31, c_real_som_32, c_real_som_33, c_real_som_34, c_real_som_35, c_real_som_36, c_real_som_37) as min_14_37 
+	-- avg
+	, (c_real_som_14 + c_real_som_15)/2 AS avg_14_15, (c_real_som_14 + c_real_som_15 + c_real_som_16)/3 AS avg_14_16
+	, (c_real_som_14 + c_real_som_15 + c_real_som_16 + c_real_som_17 + c_real_som_18 + c_real_som_19)/6 AS avg_14_19
+	, (c_real_som_14 + c_real_som_15 + c_real_som_16 + c_real_som_17 + c_real_som_18 + c_real_som_19 + c_real_som_20 + c_real_som_21 + c_real_som_22 + c_real_som_23 + c_real_som_24 + c_real_som_25)/12 AS avg_14_25
+	, (c_real_som_14 + c_real_som_15 + c_real_som_16 + c_real_som_17 + c_real_som_18 + c_real_som_19 + c_real_som_20 + c_real_som_21 + c_real_som_22 + c_real_som_23 + c_real_som_24 + c_real_som_25 + c_real_som_26 + c_real_som_27 + c_real_som_28 + c_real_som_29 + c_real_som_30 + c_real_som_31 + c_real_som_32 + c_real_som_33 + c_real_som_34 + c_real_som_35 + c_real_som_36 + c_real_som_37)/24 as avg_14_37 
+	
+FROM dr_c_real_ssm_2_36;
+
+-- 【】
+-- 去年本月的上述特征
+-- 上个月销量，比上，近三/四个月的均值/近半年的均值/近一年均值/近2年均值
+-- 均值换成中位数/最大值/最小值
+-- 各时段的最大值-最小值
+-- -------------
+-- 去年这个月销量，比上，12~14/~15/~17/~23的mean\min\max\median
+CREATE TABLE whole_f7_1_step2
+AS
+SELECT *
+	--今年的各种做差
+	--X个月的median/max/min/avg - Y个月的
+	--median - median
+	, median_2_4 - median_2_7 as median_2_4__sub__median_2_7
+	, median_2_4 - median_2_13 as median_2_4__sub__median_2_13
+	, median_2_4 - median_2_25 as median_2_4__sub__median_2_25
+	
+	, median_2_7 - median_2_13 as median_2_7__sub__median_2_13
+	, median_2_7 - median_2_25 as median_2_7__sub__median_2_25
+	
+	, median_2_13 - median_2_25 as median_2_13__sub__median_2_25
+
+	--median - min
+	, median_2_4 - min_2_7 as median_2_4__sub__min_2_7
+	, median_2_4 - min_2_13 as median_2_4__sub__min_2_13
+	, median_2_4 - min_2_25 as median_2_4__sub__min_2_25
+	
+	, median_2_7 - min_2_13 as median_2_7__sub__min_2_13
+	, median_2_7 - min_2_25 as median_2_7__sub__min_2_25
+	
+	, median_2_13 - min_2_25 as median_2_13__sub__min_2_25
+
+	--median - avg
+	, median_2_4 - avg_2_7 as median_2_4__sub__avg_2_7
+	, median_2_4 - avg_2_13 as median_2_4__sub__avg_2_13
+	, median_2_4 - avg_2_25 as median_2_4__sub__avg_2_25
+	
+	, median_2_7 - avg_2_13 as median_2_7__sub__avg_2_13
+	, median_2_7 - avg_2_25 as median_2_7__sub__avg_2_25
+	
+	, median_2_13 - avg_2_25 as median_2_13__sub__avg_2_25
+
+--max - max
+	, max_2_4 - max_2_7 as max_2_4__sub__max_2_7
+	, max_2_4 - max_2_13 as max_2_4__sub__max_2_13
+	, max_2_4 - max_2_25 as max_2_4__sub__max_2_25
+	
+	, max_2_7 - max_2_13 as max_2_7__sub__max_2_13
+	, max_2_7 - max_2_25 as max_2_7__sub__max_2_25
+	
+	, max_2_13 - max_2_25 as max_2_13__sub__max_2_25
+	--max - avg
+	, max_2_4 - avg_2_7 as max_2_4__sub__avg_2_7
+	, max_2_4 - avg_2_13 as max_2_4__sub__avg_2_13
+	, max_2_4 - avg_2_25 as max_2_4__sub__avg_2_25
+	
+	, max_2_7 - avg_2_13 as max_2_7__sub__avg_2_13
+	, max_2_7 - avg_2_25 as max_2_7__sub__avg_2_25
+	
+	, max_2_13 - avg_2_25 as max_2_13__sub__avg_2_25
+	--max - median
+	, max_2_4 - median_2_7 as max_2_4__sub__median_2_7
+	, max_2_4 - median_2_13 as max_2_4__sub__median_2_13
+	, max_2_4 - median_2_25 as max_2_4__sub__median_2_25
+	
+	, max_2_7 - median_2_13 as max_2_7__sub__median_2_13
+	, max_2_7 - median_2_25 as max_2_7__sub__median_2_25
+	
+	, max_2_13 - median_2_25 as max_2_13__sub__median_2_25
+--max - min
+	, max_2_4 - min_2_7 as max_2_4__sub__min_2_7
+	, max_2_4 - min_2_13 as max_2_4__sub__min_2_13
+	, max_2_4 - min_2_25 as max_2_4__sub__min_2_25
+	
+	, max_2_7 - min_2_13 as max_2_7__sub__min_2_13
+	, max_2_7 - min_2_25 as max_2_7__sub__min_2_25
+	
+	, max_2_13 - min_2_25 as max_2_13__sub__min_2_25
+
+--avg - min
+	, avg_2_4 - min_2_7 as avg_2_4__sub__min_2_7
+	, avg_2_4 - min_2_13 as avg_2_4__sub__min_2_13
+	, avg_2_4 - min_2_25 as avg_2_4__sub__min_2_25
+	
+	, avg_2_7 - min_2_13 as avg_2_7__sub__min_2_13
+	, avg_2_7 - min_2_25 as avg_2_7__sub__min_2_25
+	
+	, avg_2_13 - min_2_25 as avg_2_13__sub__min_2_25
+--avg - avg
+	, avg_2_4 - avg_2_7 as avg_2_4__sub__avg_2_7
+	, avg_2_4 - avg_2_13 as avg_2_4__sub__avg_2_13
+	, avg_2_4 - avg_2_25 as avg_2_4__sub__avg_2_25
+	
+	, avg_2_7 - avg_2_13 as avg_2_7__sub__avg_2_13
+	, avg_2_7 - avg_2_25 as avg_2_7__sub__avg_2_25
+	
+	, avg_2_13 - avg_2_25 as avg_2_13__sub__avg_2_25
+	
+	--min - min
+	, min_2_4 - min_2_7 as min_2_4__sub__min_2_7
+	, min_2_4 - min_2_13 as min_2_4__sub__min_2_13
+	, min_2_4 - min_2_25 as min_2_4__sub__min_2_25
+	
+	, min_2_7 - min_2_13 as min_2_7__sub__min_2_13
+	, min_2_7 - min_2_25 as min_2_7__sub__min_2_25
+	
+	, min_2_13 - min_2_25 as min_2_13__sub__min_2_25
+	
+	--去年的本月销量，与其他这些均值中位数之类的关系
+	, c_real_som_12 - median_14_16 as c_real_som_12__sub__median_14_16
+, c_real_som_12 - median_14_19 as c_real_som_12__sub__median_14_19
+, c_real_som_12 - median_14_25 as c_real_som_12__sub__median_14_25
+, c_real_som_12 - median_14_37 as c_real_som_12__sub__median_14_37
+
+, c_real_som_12 - max_14_16 as c_real_som_12__sub__max_14_16
+, c_real_som_12 - max_14_19 as c_real_som_12__sub__max_14_19
+, c_real_som_12 - max_14_25 as c_real_som_12__sub__max_14_25
+, c_real_som_12 - max_14_37 as c_real_som_12__sub__max_14_37
+
+, c_real_som_12 - min_14_16 as c_real_som_12__sub__min_14_16
+, c_real_som_12 - min_14_19 as c_real_som_12__sub__min_14_19
+, c_real_som_12 - min_14_25 as c_real_som_12__sub__min_14_25
+, c_real_som_12 - min_14_37 as c_real_som_12__sub__min_14_37
+
+, c_real_som_12 - avg_14_16 as c_real_som_12__sub__avg_14_16
+, c_real_som_12 - avg_14_19 as c_real_som_12__sub__avg_14_19
+, c_real_som_12 - avg_14_25 as c_real_som_12__sub__avg_14_25
+, c_real_som_12 - avg_14_37 as c_real_som_12__sub__avg_14_37
+
+--【平滑除法】
+--median +1)/(1+ median
+	, (median_2_4 +1)/(1+ median_2_7) as median_2_4__smoothdivby__median_2_7
+	, (median_2_4 +1)/(1+ median_2_13) as median_2_4__smoothdivby__median_2_13
+	, (median_2_4 +1)/(1+ median_2_25) as median_2_4__smoothdivby__median_2_25
+	
+	, (median_2_7 +1)/(1+ median_2_13) as median_2_7__smoothdivby__median_2_13
+	, (median_2_7 +1)/(1+ median_2_25) as median_2_7__smoothdivby__median_2_25
+	
+	, (median_2_13 +1)/(1+ median_2_25) as median_2_13__smoothdivby__median_2_25
+
+	--median +1)/(1+ min
+	, (median_2_4 +1)/(1+ min_2_7) as median_2_4__smoothdivby__min_2_7
+	, (median_2_4 +1)/(1+ min_2_13) as median_2_4__smoothdivby__min_2_13
+	, (median_2_4 +1)/(1+ min_2_25) as median_2_4__smoothdivby__min_2_25
+	
+	, (median_2_7 +1)/(1+ min_2_13) as median_2_7__smoothdivby__min_2_13
+	, (median_2_7 +1)/(1+ min_2_25) as median_2_7__smoothdivby__min_2_25
+	
+	, (median_2_13 +1)/(1+ min_2_25) as median_2_13__smoothdivby__min_2_25
+
+	--median +1)/(1+ avg
+	, (median_2_4 +1)/(1+ avg_2_7) as median_2_4__smoothdivby__avg_2_7
+	, (median_2_4 +1)/(1+ avg_2_13) as median_2_4__smoothdivby__avg_2_13
+	, (median_2_4 +1)/(1+ avg_2_25) as median_2_4__smoothdivby__avg_2_25
+	
+	, (median_2_7 +1)/(1+ avg_2_13) as median_2_7__smoothdivby__avg_2_13
+	, (median_2_7 +1)/(1+ avg_2_25) as median_2_7__smoothdivby__avg_2_25
+	
+	, (median_2_13 +1)/(1+ avg_2_25) as median_2_13__smoothdivby__avg_2_25
+
+--max +1)/(1+ max
+	, (max_2_4 +1)/(1+ max_2_7) as max_2_4__smoothdivby__max_2_7
+	, (max_2_4 +1)/(1+ max_2_13) as max_2_4__smoothdivby__max_2_13
+	, (max_2_4 +1)/(1+ max_2_25) as max_2_4__smoothdivby__max_2_25
+	
+	, (max_2_7 +1)/(1+ max_2_13) as max_2_7__smoothdivby__max_2_13
+	, (max_2_7 +1)/(1+ max_2_25) as max_2_7__smoothdivby__max_2_25
+	
+	, (max_2_13 +1)/(1+ max_2_25) as max_2_13__smoothdivby__max_2_25
+	--max +1)/(1+ avg
+	, (max_2_4 +1)/(1+ avg_2_7) as max_2_4__smoothdivby__avg_2_7
+	, (max_2_4 +1)/(1+ avg_2_13) as max_2_4__smoothdivby__avg_2_13
+	, (max_2_4 +1)/(1+ avg_2_25) as max_2_4__smoothdivby__avg_2_25
+	
+	, (max_2_7 +1)/(1+ avg_2_13) as max_2_7__smoothdivby__avg_2_13
+	, (max_2_7 +1)/(1+ avg_2_25) as max_2_7__smoothdivby__avg_2_25
+	
+	, (max_2_13 +1)/(1+ avg_2_25) as max_2_13__smoothdivby__avg_2_25
+	--max +1)/(1+ median
+	, (max_2_4 +1)/(1+ median_2_7) as max_2_4__smoothdivby__median_2_7
+	, (max_2_4 +1)/(1+ median_2_13) as max_2_4__smoothdivby__median_2_13
+	, (max_2_4 +1)/(1+ median_2_25) as max_2_4__smoothdivby__median_2_25
+	
+	, (max_2_7 +1)/(1+ median_2_13) as max_2_7__smoothdivby__median_2_13
+	, (max_2_7 +1)/(1+ median_2_25) as max_2_7__smoothdivby__median_2_25
+	
+	, (max_2_13 +1)/(1+ median_2_25) as max_2_13__smoothdivby__median_2_25
+--max +1)/(1+ min
+	, (max_2_4 +1)/(1+ min_2_7) as max_2_4__smoothdivby__min_2_7
+	, (max_2_4 +1)/(1+ min_2_13) as max_2_4__smoothdivby__min_2_13
+	, (max_2_4 +1)/(1+ min_2_25) as max_2_4__smoothdivby__min_2_25
+	
+	, (max_2_7 +1)/(1+ min_2_13) as max_2_7__smoothdivby__min_2_13
+	, (max_2_7 +1)/(1+ min_2_25) as max_2_7__smoothdivby__min_2_25
+	
+	, (max_2_13 +1)/(1+ min_2_25) as max_2_13__smoothdivby__min_2_25
+
+--avg +1)/(1+ min
+	, (avg_2_4 +1)/(1+ min_2_7) as avg_2_4__smoothdivby__min_2_7
+	, (avg_2_4 +1)/(1+ min_2_13) as avg_2_4__smoothdivby__min_2_13
+	, (avg_2_4 +1)/(1+ min_2_25) as avg_2_4__smoothdivby__min_2_25
+	
+	, (avg_2_7 +1)/(1+ min_2_13) as avg_2_7__smoothdivby__min_2_13
+	, (avg_2_7 +1)/(1+ min_2_25) as avg_2_7__smoothdivby__min_2_25
+	
+	, (avg_2_13 +1)/(1+ min_2_25) as avg_2_13__smoothdivby__min_2_25
+--avg +1)/(1+ avg
+	, (avg_2_4 +1)/(1+ avg_2_7) as avg_2_4__smoothdivby__avg_2_7
+	, (avg_2_4 +1)/(1+ avg_2_13) as avg_2_4__smoothdivby__avg_2_13
+	, (avg_2_4 +1)/(1+ avg_2_25) as avg_2_4__smoothdivby__avg_2_25
+	
+	, (avg_2_7 +1)/(1+ avg_2_13) as avg_2_7__smoothdivby__avg_2_13
+	, (avg_2_7 +1)/(1+ avg_2_25) as avg_2_7__smoothdivby__avg_2_25
+	
+	, (avg_2_13 +1)/(1+ avg_2_25) as avg_2_13__smoothdivby__avg_2_25
+	
+	--min +1)/(1+ min
+	, (min_2_4 +1)/(1+ min_2_7) as min_2_4__smoothdivby__min_2_7
+	, (min_2_4 +1)/(1+ min_2_13) as min_2_4__smoothdivby__min_2_13
+	, (min_2_4 +1)/(1+ min_2_25) as min_2_4__smoothdivby__min_2_25
+	
+	, (min_2_7 +1)/(1+ min_2_13) as min_2_7__smoothdivby__min_2_13
+	, (min_2_7 +1)/(1+ min_2_25) as min_2_7__smoothdivby__min_2_25
+	
+	, (min_2_13 +1)/(1+ min_2_25) as min_2_13__smoothdivby__min_2_25
+	
+	--去年的本月销量，与其他这些均值中位数之类的关系
+	, (c_real_som_12 +1)/(1+ median_14_16) as c_real_som_12__smoothdivby__median_14_16
+, (c_real_som_12 +1)/(1+ median_14_19) as c_real_som_12__smoothdivby__median_14_19
+, (c_real_som_12 +1)/(1+ median_14_25) as c_real_som_12__smoothdivby__median_14_25
+, (c_real_som_12 +1)/(1+ median_14_37) as c_real_som_12__smoothdivby__median_14_37
+
+, (c_real_som_12 +1)/(1+ max_14_16) as c_real_som_12__smoothdivby__max_14_16
+, (c_real_som_12 +1)/(1+ max_14_19) as c_real_som_12__smoothdivby__max_14_19
+, (c_real_som_12 +1)/(1+ max_14_25) as c_real_som_12__smoothdivby__max_14_25
+, (c_real_som_12 +1)/(1+ max_14_37) as c_real_som_12__smoothdivby__max_14_37
+
+, (c_real_som_12 +1)/(1+ min_14_16) as c_real_som_12__smoothdivby__min_14_16
+, (c_real_som_12 +1)/(1+ min_14_19) as c_real_som_12__smoothdivby__min_14_19
+, (c_real_som_12 +1)/(1+ min_14_25) as c_real_som_12__smoothdivby__min_14_25
+, (c_real_som_12 +1)/(1+ min_14_37) as c_real_som_12__smoothdivby__min_14_37
+
+, (c_real_som_12 +1)/(1+ avg_14_16) as c_real_som_12__smoothdivby__avg_14_16
+, (c_real_som_12 +1)/(1+ avg_14_19) as c_real_som_12__smoothdivby__avg_14_19
+, (c_real_som_12 +1)/(1+ avg_14_25) as c_real_som_12__smoothdivby__avg_14_25
+, (c_real_som_12 +1)/(1+ avg_14_37) as c_real_som_12__smoothdivby__avg_14_37
+
+FROM whole_f7_1_step1;

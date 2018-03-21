@@ -1,0 +1,44 @@
+
+
+-- 用车型开窗，窗内根据销量从小到大dense排序
+create table tmp_dense_rank_sale_in_class as
+select class_id, sale_quantity, dense_rank() over (partition by class_id order by sale_quantity asc) as d_rank
+from whole_before_split_v2;
+
+drop table if exists rank_step2;
+create table rank_step2 as 
+select distinct  class_id, sale_quantity, d_rank from 
+tmp_dense_rank_sale_in_class
+where d_rank = 1 or d_rank = 2 or d_rank = 3
+;
+
+drop table if exists rank_step2_5;
+create table rank_step2_5 as 
+select a.*, b.sale_quantity as rank1_in_window from (select distinct class_id from yc_passenger_car_sales ) a 
+left outer join ( select * from rank_step2 where d_rank=1) b 
+on a.class_id = b.class_id;
+
+drop table if exists rank_step3;
+create table rank_step3 as 
+select a.*, b.sale_quantity as rank2_in_window from rank_step2_5 a 
+left outer join ( select * from rank_step2 where d_rank=2) b 
+on a.class_id = b.class_id;
+
+drop table if exists rank_step4;
+create table rank_step4 as 
+select a.*, b.sale_quantity as rank3_in_window from rank_step3 a 
+left outer join ( select * from rank_step2 where d_rank=3) b 
+on a.class_id = b.class_id;
+
+
+-- select * from rank_step4;
+
+drop table if exists times;
+create table times as 
+select *, 
+case when rank3_in_window - rank2_in_window = rank2_in_window and rank2_in_window - rank1_in_window = rank1_in_window then rank2_in_window - rank1_in_window  
+	else least(rank3_in_window - rank2_in_window, rank2_in_window - rank1_in_window) end as times 
+from rank_step4;
+
+select * from times;
+select * from times where times is null;

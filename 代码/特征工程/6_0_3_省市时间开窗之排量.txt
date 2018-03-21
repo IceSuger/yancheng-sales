@@ -1,0 +1,21 @@
+drop table if exists whole_f603__prv_city_month;
+create table whole_f603__prv_city_month as
+SELECT province_id, city_id, sale_date, displacement_level --, c_real_som_displace_level_2
+	, dense_rank() OVER (PARTITION BY province_id, city_id, sale_date ORDER BY c_real_som_displace_level_2 ASC) AS rank_real_displace_level_within_prv_city_month__2_mm_ago
+	, COUNT(c_real_som_displace_level_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS count_of_record_real_displace_level_within_prv_city_month__2_mm_ago
+	, AVG(c_real_som_displace_level_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS avg_real_displace_level_within_prv_city_month__2_mm_ago
+	, MAX(c_real_som_displace_level_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS max_real_displace_level_within_prv_city_month__2_mm_ago
+	, MIN(c_real_som_displace_level_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS min_real_displace_level_within_prv_city_month__2_mm_ago
+	, median(c_real_som_displace_level_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS median_real_displace_level_within_prv_city_month__2_mm_ago
+	, STDDEV(c_real_som_displace_level_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS stddev_real_displace_level_within_prv_city_month__2_mm_ago
+	, stddev_samp(c_real_som_displace_level_2) OVER (PARTITION BY province_id, city_id, sale_date ) AS stddev_samp_real_displace_level_within_prv_city_month__2_mm_ago
+	
+	, dense_rank() OVER (PARTITION BY province_id, city_id, sale_date ORDER BY c_real_som_displace_level_12 ASC) AS rank_real_displace_level_within_prv_city_month__12_mm_ago
+	, COUNT(c_real_som_displace_level_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS count_of_record_real_displace_level_within_prv_city_month__12_mm_ago
+	, AVG(c_real_som_displace_level_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS avg_real_displace_level_within_prv_city_month__12_mm_ago
+	, MAX(c_real_som_displace_level_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS max_real_displace_level_within_prv_city_month__12_mm_ago
+	, MIN(c_real_som_displace_level_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS min_real_displace_level_within_prv_city_month__12_mm_ago
+	, median(c_real_som_displace_level_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS median_real_displace_level_within_prv_city_month__12_mm_ago
+	, STDDEV(c_real_som_displace_level_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS stddev_real_displace_level_within_prv_city_month__12_mm_ago
+	, stddev_samp(c_real_som_displace_level_12) OVER (PARTITION BY province_id, city_id, sale_date ) AS stddev_samp_real_displace_level_within_prv_city_month__12_mm_ago
+FROM dr_c_real_ssm_displace_level_2_36;	

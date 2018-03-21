@@ -1,0 +1,37 @@
+drop table if exists helper_for_features_on_class;
+create table helper_for_features_on_class as
+SELECT class_id, brand_id, compartment
+	, displacement, if_charging, driven_type_id, fuel_type_id
+	, newenergy_type_id, emission_standards_id, if_mpv_id, if_luxurious_id, power
+	, car_length, car_width, car_height, rated_passenger
+FROM prj_tc_231640_121545_n6t109.yc_passenger_car_sales;
+
+drop table if exists oc_origin;
+create table oc_origin as
+select class_id,brand_id,compartment,driven_type_id,fuel_type_id,newenergy_type_id,emission_standards_id,if_mpv_id,if_luxurious_id,car_length,car_width,car_height
+, cast(substring(displacement, 1, 3) as double) as displacement 
+, case if_charging when 'L' then 0 when 'T' then 1 else 2 end as if_charging 
+, cast(substring(rated_passenger, -1, 1) as bigint) as rated_passenger
+, case when power is not null then cast(split_part(power, '/', 1) as double) else null end as power
+from helper_for_features_on_class;
+
+--分组弄出OC表
+drop table if exists oc;
+create table oc as 
+select class_id
+, median(brand_id) as brand_id_median
+, avg(compartment) as compartment_avg, median(compartment) as compartment_median, max(compartment) as compartment_max, min(compartment) as compartment_min
+, median(driven_type_id) as driven_type_id_median, max(driven_type_id) as driven_type_id_max, min(driven_type_id) as driven_type_id_min
+, avg(fuel_type_id) as fuel_type_id_avg, median(fuel_type_id) as fuel_type_id_median, max(fuel_type_id) as fuel_type_id_max, min(fuel_type_id) as fuel_type_id_min
+, avg(newenergy_type_id) as newenergy_type_id_avg, median(newenergy_type_id) as newenergy_type_id_median, max(newenergy_type_id) as newenergy_type_id_max, min(newenergy_type_id) as newenergy_type_id_min
+, avg(emission_standards_id) as emission_standards_id_avg, median(emission_standards_id) as emission_standards_id_median, max(emission_standards_id) as emission_standards_id_max, min(emission_standards_id) as emission_standards_id_min
+, median(if_mpv_id) as if_mpv_id_median
+, median(if_luxurious_id) as if_luxurious_id_median
+, avg(car_length) as car_length_avg, median(car_length) as car_length_median, max(car_length) as car_length_max, min(car_length) as car_length_min
+, avg(car_width) as car_width_avg, median(car_width) as car_width_median, max(car_width) as car_width_max, min(car_width) as car_width_min
+, avg(car_height) as car_height_avg, median(car_height) as car_height_median, max(car_height) as car_height_max, min(car_height) as car_height_min
+, median(displacement) as displacement
+, median(if_charging) as if_charging
+, median(rated_passenger) as rated_passenger
+, median(power) as power
+from oc_origin group by class_id;

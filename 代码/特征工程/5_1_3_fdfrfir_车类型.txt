@@ -1,0 +1,24 @@
+DROP TABLE IF EXISTS whole_f5_1_3;
+
+DROP TABLE IF EXISTS whole_f5_1_3_fdfr;
+
+CREATE TABLE whole_f5_1_3_fdfr
+AS
+SELECT *, c_real_som_type_2 - c_real_som_type_3 AS c_real_fd_type_2, c_real_som_type_3 - c_real_som_type_4 AS c_real_fd_type_3
+	, c_real_som_type_12 - c_real_som_type_13 AS c_real_fd_type_12, c_real_som_type_24 - c_real_som_type_25 AS c_real_fd_type_24
+	, c_real_som_type_36 - c_real_som_type_37 AS c_real_fd_type_36, c_real_som_type_2  / c_real_som_type_3  AS c_real_fr_type_2
+	, c_real_som_type_3 / c_real_som_type_4 AS c_real_fr_type_3, c_real_som_type_12 / c_real_som_type_13 AS c_real_fr_type_12
+	, c_real_som_type_24 / c_real_som_type_25 AS c_real_fr_type_24, c_real_som_type_36 / c_real_som_type_37 AS c_real_fr_type_36
+	, c_real_som_type_2 - c_real_som_type_14 as c_real_fd_type_2_14, c_real_som_type_3 - c_real_som_type_15 as c_real_fd_type_3_15
+	, c_real_som_type_2 / c_real_som_type_14 as c_real_fr_type_2_14, c_real_som_type_3 / c_real_som_type_15 as c_real_fr_type_3_15
+FROM dr_c_real_ssm_type_2_36;
+
+-- inc_rate 增长率 c_fir
+CREATE TABLE whole_f5_1_3
+AS
+SELECT *, c_real_fr_type_2 - 1 AS c_real_fir_type_2, c_real_fr_type_3 - 1 AS c_real_fir_type_3
+	, c_real_fr_type_12 - 1 AS c_real_fir_type_12, c_real_fr_type_24 - 1 AS c_real_fir_type_24
+	, c_real_fr_type_36 - 1 AS c_real_fir_type_36
+	, c_real_fr_type_2_14 - 1 as c_real_fir_type_2_14
+	, c_real_fr_type_3_15 - 1 as c_real_fir_type_3_15
+FROM whole_f5_1_3_fdfr;

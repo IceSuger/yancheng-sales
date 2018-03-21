@@ -1,0 +1,34 @@
+-- 统计
+DROP TABLE IF EXISTS sale_only_train;
+
+CREATE TABLE sale_only_train
+AS
+SELECT sale_date, province_id, city_id, class_id
+	, SUM(sale_quantity) AS sale_quantity, SUM(real_sale) AS real_sale
+	, AVG(times) AS times
+FROM yc_sales_with_times_and_real_sale
+GROUP BY province_id, 
+	city_id, 
+	class_id, 
+	sale_date;
+
+--测试集加上times列
+drop table if exists test_b_with_times;
+create table test_b_with_times as 
+SELECT a.*, b.times
+	FROM yc_result_sample_b a
+	LEFT OUTER JOIN times b
+	ON a.class_id = b.class_id;
+-- 把测试集拼上来
+DROP TABLE IF EXISTS whole_f2_step1;
+
+CREATE TABLE whole_f2_step1
+AS
+SELECT *
+FROM sale_only_train
+UNION ALL
+SELECT predict_date AS sale_date, province_id, city_id, class_id, predict_quantity AS sale_quantity
+	, NULL AS real_sale, times
+FROM test_b_with_times;
+
+alter table whole_f2_step1 rename to whole_f2;

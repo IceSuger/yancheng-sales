@@ -1,0 +1,13 @@
+
+drop table if exists whole_f5_step1;
+CREATE TABLE whole_f5_step1
+AS
+SELECT sale_date, province_id, city_id, type_saloon_suv_mpv
+	, SUM(sale_quantity) AS sale_quantity, SUM(real_sale) AS real_sale
+FROM whole_f3
+GROUP BY province_id, 
+	city_id, 
+	type_saloon_suv_mpv, 
+	sale_date;
+	
+select * from whole_f5_step1;

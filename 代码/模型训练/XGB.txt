@@ -1,0 +1,63 @@
+drop table if exists xiao_xgb_pred;
+DROP OFFLINEMODEL IF EXISTS xiao_xgb_model;
+
+-- train
+PAI
+-name xgboost
+-project algo_public
+-Deta="${eta}"
+-Dobjective="reg:linear"
+-DitemDelimiter=","
+-Dseed="0"
+-Dnum_round="${round}"
+-DlabelColName="real_sale"
+--训练集
+-DinputTableName="${train_X}"
+-DenableSparse="false"
+-Dmax_depth="8"
+-Dsubsample="0.4"
+-Dcolsample_bytree="0.6"
+-DmodelName="xiao_xgb_model" -- 模型保存的名字
+-Dgamma="0"
+-Dlambda="50"
+-DfeatureColNames="${features}"
+-Dbase_score="0.11"
+-Dmin_child_weight="100"
+-DkvDelimiter=":";
+
+
+-- predict
+PAI
+-name prediction
+-project algo_public
+-DdetailColName="prediction_detail"
+-DappendColNames="predict_date,province_id,city_id,class_id,times"--多带了times，用于算出预测分数后乘回倍数
+-DmodelName="xiao_xgb_model" -- 模型保存的名字
+-DitemDelimiter=","
+-DresultColName="prediction_result"
+-Dlifecycle="28"
+-DoutputTableName="xiao_xgb_pred" --输出结果
+-DscoreColName="prediction_score"
+-DkvDelimiter=":"
+-DfeatureColNames="${features}"
+--测试集
+-DinputTableName="${test_X}"
+-DenableSparse="false";
+
+
+--融合
+-- alter table yc_result_submit_a rename to yc_result_submit_a_9257;
+-- alter table yc_result_submit_a_9257 change column predict_quantity rename to p_q_9257;
+
+drop table if exists xgb_for_ensemble;
+create table xgb_for_ensemble as
+select predict_date,province_id,city_id,class_id, if(prediction_score<0, 1, prediction_score) as prediction_score, times 
+from xiao_xgb_pred;
+
+-- create table table_ensemble as
+-- select a.predict_date, a.province_id, a.city_id, a.class_id, a.p_q_9257, b.predict_quantity as p_q_xgb from yc_result_submit_a_9257 a
+-- 	left outer join xgb_for_ensemble b on a.province_id=b.province_id and a.city_id=b.city_id and a.class_id=b.class_id;
+
+-- create table yc_result_submit_a as
+-- select predict_date,province_id,city_id,class_id, (p_q_9257 + p_q_xgb)*0.5 as predict_quantity
+-- from table_ensemble;

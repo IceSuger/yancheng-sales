@@ -1,0 +1,30 @@
+-- alter table yc_sales_with_times_and_real_sale change column sale_quantity rename to real_sale;
+-- alter table yc_sales_with_times_and_real_sale change column twisted_sale_qty rename to sale_quantity;
+
+DROP TABLE IF EXISTS yc_sales_with_times_and_real_sale;
+
+CREATE TABLE yc_sales_with_times_and_real_sale
+AS
+SELECT a.*, b.times
+	, CASE 
+		WHEN b.times IS NOT NULL THEN a.sale_quantity / b.times
+		ELSE a.sale_quantity
+	END AS real_sale
+FROM yc_passenger_car_sales a
+LEFT OUTER JOIN times b
+ON a.class_id = b.class_id;
+
+DROP TABLE IF EXISTS sale_of_class;
+
+CREATE TABLE sale_of_class
+AS 
+SELECT class_id, SUM(real_sale) AS real_sale, AVG(times) as times , COUNT(*) as count_of_record 
+FROM yc_sales_with_times_and_real_sale
+GROUP BY class_id;
+
+-- SELECT *
+-- FROM sale_of_class
+-- ORDER BY count_of_record DESC
+-- LIMIT 15000000;
+
+select times, sum(count_of_record) as count from sale_of_class group by times;
